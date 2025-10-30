@@ -161,7 +161,7 @@ export default function InvestmentPage({ onNavigate }: InvestmentPageProps) {
 
   return (
     // <div className="w-full min-h-screen bg-[#0D0D0D] flex flex-col items-stretch justify-start p-6 pb-20 overflow-hidden">
-<div className="absolute inset-0 bg-[#0D0D0D] flex flex-col p-6 pb-20 h-screen">
+<div className="absolute inset-0 bg-[#0D0D0D] flex flex-col p-6 pb-20 h-screen overflow-x-auto">
 
 {/* <div className="w-screen min-h-screen bg-[#0D0D0D] flex flex-col items-stretch justify-start p-6 pb-20 overflow-hidden"> */}
 

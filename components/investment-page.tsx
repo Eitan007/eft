@@ -105,8 +105,12 @@ export default function InvestmentPage({ onNavigate }: InvestmentPageProps) {
 
   const [invalidAmount, setInvalidAmount] = useState(false)
   const [invalidPaymentMethod, setInvalidPaymentMethod] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const handleContinuePayment = () => {
+
+    // console.log(paymentMethod.length)
+    // return
     if (!amount || Number.parseFloat(amount) <= 0) {
       setInvalidAmount(true)
       setTimeout(() => setInvalidAmount(false), 2000)
@@ -115,19 +119,32 @@ export default function InvestmentPage({ onNavigate }: InvestmentPageProps) {
       setInvalidAmount(false)
     }
   
-    if (!paymentMethod) {
+    if (paymentMethod.length == 0) {
       setInvalidPaymentMethod(true)
       setTimeout(() => setInvalidPaymentMethod(false), 2000)
+      return
     } else {
       setInvalidPaymentMethod(false)
     }
 
+    setLoading(true)
+    const delay = Math.floor(Math.random() * (5000 - 2000 + 1)) + 2000
+
     const data = { amount, selectedETF, paymentMethod, selectedCrypto }
 
+
+
     if (paymentMethod === "card") {
-      onNavigate("card", data)
+      setTimeout(() => {
+        setLoading(false)
+        onNavigate("card", data)
+      }, delay)
+
     } else {
-      onNavigate("crypto", data)
+      setTimeout(() => {
+        setLoading(false)
+        onNavigate("crypto", data)
+      }, delay)
     }
   }
 
@@ -144,7 +161,7 @@ export default function InvestmentPage({ onNavigate }: InvestmentPageProps) {
 
   return (
     // <div className="w-full min-h-screen bg-[#0D0D0D] flex flex-col items-stretch justify-start p-6 pb-20 overflow-hidden">
-<div className="absolute inset-0 bg-[#0D0D0D] flex flex-col p-6 pb-20 overflow-hidden">
+<div className="absolute inset-0 bg-[#0D0D0D] flex flex-col p-6 pb-20 h-screen">
 
 {/* <div className="w-screen min-h-screen bg-[#0D0D0D] flex flex-col items-stretch justify-start p-6 pb-20 overflow-hidden"> */}
 
@@ -162,7 +179,7 @@ export default function InvestmentPage({ onNavigate }: InvestmentPageProps) {
 
     {/* Amount Input */}
     <div className="mb-3 h-20 flex items-center">
-      <div className={`rounded-2xl p-6 w-full hover:bg-[#1C1C1C]/50 smooth-transition ${invalidAmount ? "border-red-500 border-2" : ""}`}>
+      <div className={`rounded-2xl p-6 w-full hover:bg-[#1C1C1C]/50 smooth-transition ${invalidAmount ? "border-red-500 border-1" : ""}`}>
         <div
           className={`${getFontSize()} font-bold text-white flex items-baseline gap-2 smooth-transition ${isNeonBlue ? "neon-blue" : ""}`}
         >
@@ -222,7 +239,7 @@ export default function InvestmentPage({ onNavigate }: InvestmentPageProps) {
 
     {/* Payment Method */}
     <div className="mb-4">
-      <label className="text-sm text-[#A0A0A0] mb-2 block font-medium">Pay with</label>
+      <label className="text-sm text-[#A0A0A0] mb-2 block font-medium ">Pay with</label>
       <button
         onClick={() => setShowPaymentMethod(true)}
         className={`w-full bg-[#0E2047]/40 rounded-xl p-3 border ${invalidPaymentMethod ? "border-red-500" : "border-[#0E2047]/40"} flex items-center justify-between smooth-transition hover:bg-[#0E2047]/60 hover:border-[#0E2047]/60`}
@@ -240,7 +257,7 @@ export default function InvestmentPage({ onNavigate }: InvestmentPageProps) {
     </div>
 
     {/* Keypad */}
-    <div className="grid grid-cols-3 gap-2 mb-4">
+    <div className="grid grid-cols-3 gap-2 mb-4 flex-1">
       {["1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "0", "backspace"].map((key) => (
         <button
           key={key}
@@ -255,9 +272,12 @@ export default function InvestmentPage({ onNavigate }: InvestmentPageProps) {
     {/* Continue Button */}
     <Button
       onClick={handleContinuePayment}
+      disabled={loading}
+
       className="w-full bg-[#0052FF] text-white font-semibold py-5 text-base rounded-xl smooth-transition gradient-button"
     >
-      Continue to Payment
+          {loading ? "Processing..." : `Continue to Payment`}
+          
     </Button>
 
     {/* Modals */}
@@ -288,4 +308,3 @@ export default function InvestmentPage({ onNavigate }: InvestmentPageProps) {
     )}
     </div>)
    }
-

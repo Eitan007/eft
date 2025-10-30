@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ArrowLeft, Copy, Check, QrCode } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import QRCode from "react-qr-code"
@@ -48,12 +48,28 @@ const getCryptoEquivalent = (crypto: string, amount: string) => {
 export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaymentPageProps) {
   const [copied, setCopied] = useState(false)
   const [showQR, setShowQR] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 mins in seconds
+  const [submitted, setSubmitted] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false) // ✅ track success state
   const walletAddress = "0xFF103...6e2bc0B660"
   const fullAddress = "0xFF103a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e2bc0B660"
   let network = getNetwork(crypto);
 
   let cryptoEquivalent = getCryptoEquivalent(crypto, amount);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (seconds) => {
+    const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+    const s = String(seconds % 60).padStart(2, "0");
+    return `${m}:${s}`;
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(fullAddress)
@@ -63,12 +79,19 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
 
   const handleSubmit = () => {
     // simulate async payment confirmation
-    setTimeout(() => setShowSuccess(true), 3000)
+    setLoading(true)
+    
+    const delay = Math.floor(Math.random() * (7000 - 4000 + 1)) + 4000
+
+    setTimeout(() => {
+      setLoading(false)
+      setSubmitted(true);
+    }, delay)
   }
 
-  if (showSuccess) {
-    return <PaymentCryptoSuccess amount={amount} onBack={onBack} /> // ✅ show success page
-  }
+  // if (showSuccess) {
+  //   return <PaymentCryptoSuccess amount={amount} onBack={onBack} /> // ✅ show success page
+  // }
 
   return (
 <div className="absolute inset-0 bg-[#0D0D0D] flex flex-col p-6 pb-20 overflow-hidden">
@@ -79,7 +102,7 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
         <button onClick={onBack} className="p-2 hover:bg-[#0E2047] rounded-lg smooth-transition">
           <ArrowLeft className="w-6 h-6 text-white" />
         </button>
-        <h1 className="text-xl font-bold text-white">Crypto Payment</h1>
+        <h1 className="text-xl font-bold text-white">{formatTime(timeLeft)}</h1>
         <div className="w-10" />
       </div>
 
@@ -142,7 +165,7 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
 
       {/* Instructions */}
       {/* <div className="bg-[#1C1C1C]/30 rounded-xl p-4 mb-3 flex-1 overflow-y-auto flex flex-col justify-center"> */}
-      <div className="bg-[#1C1C1C]/30 rounded-xl p-4 mb-3 flex-1 overflow-y-auto">
+      {/* <div className="bg-[#1C1C1C]/30 rounded-xl p-4 mb-3  overflow-y-hidden">
         <h3 className="font-bold text-white mb-2 text-sm">Payment Steps:</h3>
         <ol className="space-y-2 text-xs text-[#A0A0A0]">
           <li className="flex gap-2">
@@ -158,7 +181,37 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
             <span>Your transaction will be confirmed on the blockchain</span>
           </li>
         </ol>
+      </div> */}
+      <div
+        className={`rounded-xl p-4 mb-3 overflow-y-hidden ${
+          submitted ? "border-2 border-green-500 bg-[#1C1C1C]/30" : "bg-[#1C1C1C]/30"
+        }`}
+      >
+        {!submitted ? (
+          <>
+            <h3 className="font-bold text-white mb-2 text-sm">Payment Steps:</h3>
+            <ol className="space-y-2 text-xs text-[#A0A0A0]">
+              <li className="flex gap-2">
+                <span className="font-bold text-white">1.</span>
+                <span>Scan the QR code to initiate your {crypto} payment</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="font-bold text-white">2.</span>
+                <span>Copy the {crypto} address below and send the required amount</span>
+              </li>
+              <li className="flex gap-2">
+                <span className="font-bold text-white">3.</span>
+                <span>Your transaction will be confirmed on the blockchain</span>
+              </li>
+            </ol>
+          </>
+        ) : (
+          <p className="text-green-500 text-sm text-center">
+            Your payment of {crypto} was submitted successfully. Your balance will be updated as soon as payment is received.
+          </p>
+        )}
       </div>
+
 
       {/* Note */}
       <div className="bg-[#0E2047] rounded-xl p-3 border border-transparent mb-3 bg-transparent">
@@ -170,9 +223,10 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
       {/* Submit Button */}
       <Button
         onClick={handleSubmit}
+        disabled={loading}
         className="w-full bg-[#0052FF] text-white font-semibold py-5 text-base rounded-xl smooth-transition gradient-button"
       >
-        Submit Payment
+          {loading ? "Processing..." : `Submit Payment`}
       </Button>
     </div>
   )

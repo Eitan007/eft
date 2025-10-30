@@ -94,7 +94,7 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
   // }
 
   return (
-<div className="absolute inset-0 bg-[#0D0D0D] flex flex-col p-6 pb-20 overflow-hidden">
+<div className="absolute inset-0 bg-[#0D0D0D] flex flex-col p-6 pb-20 overflow-x-auto">
 
     {/* <div className="bg-[#0D0D0D] p-6 flex flex-col h-screen overflow-hidden"> */}
       {/* Header */}

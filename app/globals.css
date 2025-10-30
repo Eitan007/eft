@@ -130,6 +130,9 @@
 
 body {
   font-feature-settings: "rlig" 1, "calt" 1;
+  overscroll-behavior: none;
+  background-color: #0D0D0D; /* your app bg color */
+  height: 100%;
 }
 
   .gradient-button {

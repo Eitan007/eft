@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ArrowLeft, CreditCard, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import PaymentFailedPage from "./payment-failed-page"
@@ -21,6 +21,13 @@ export default function CardPaymentPage({ amount, onBack }: CardPaymentPageProps
   })
   const [loading, setLoading] = useState(false)
   const [paymentFailed, setPaymentFailed] = useState(false)
+
+  useEffect(() => {
+    const prev = document.body.style.backgroundColor;
+    document.body.style.backgroundColor = "#fff";
+    return () => { document.body.style.backgroundColor = prev; }
+  }, [])
+  
 
   const formatCardNumber = (value: string) => {
     const cleaned = value.replace(/\s/g, "")
@@ -112,14 +119,14 @@ export default function CardPaymentPage({ amount, onBack }: CardPaymentPageProps
   }
 
   return (
-    <div className="min-h-screen bg-white text-black p-6 flex items-center justify-center overflow-hidden">
+    <div style={{ backgroundColor: "#ffffff"}} className="min-h-screen !bg-white text-black p-6 flex items-start justify-center overflow-auto">
       <div className="w-full max-w-md flex flex-col h-full">
         {/* Header */}
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-3 mt-10">
           <button onClick={onBack} className="p-2 hover:bg-gray-100 rounded-lg">
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <h1 className="text-lg font-bold">Card Payment Method</h1>
+          <h1 className="text-2xl font-bold">Card Payment Method</h1>
           <div className="w-10" />
         </div>
 
@@ -170,7 +177,7 @@ export default function CardPaymentPage({ amount, onBack }: CardPaymentPageProps
               value={formData.firstName}
               onChange={(e) => handleInputChange("firstName", e.target.value)}
               placeholder="John"
-              className="w-full bg-gray-50 rounded-xl px-3 py-2 border border-gray-200 outline-none focus:border-blue-500 transition-colors text-sm"
+              className=" text-[16px] w-full bg-gray-50 rounded-xl px-3 py-2 border border-gray-200 outline-none focus:border-blue-500 transition-colors text-sm"
             />
           </div>
 
@@ -181,7 +188,7 @@ export default function CardPaymentPage({ amount, onBack }: CardPaymentPageProps
               value={formData.lastName}
               onChange={(e) => handleInputChange("lastName", e.target.value)}
               placeholder="Doe"
-              className="w-full bg-gray-50 rounded-xl px-3 py-2 border border-gray-200 outline-none focus:border-blue-500 transition-colors text-sm"
+              className="text-[16px] w-full bg-gray-50 rounded-xl px-3 py-2 border border-gray-200 outline-none focus:border-blue-500 transition-colors text-sm"
             />
           </div>
 
@@ -192,7 +199,7 @@ export default function CardPaymentPage({ amount, onBack }: CardPaymentPageProps
               value={formData.cardNumber}
               onChange={(e) => handleInputChange("cardNumber", e.target.value)}
               placeholder="1234 5678 9012 3456"
-              className="w-full bg-gray-50 rounded-xl px-3 py-2 border border-gray-200 outline-none focus:border-blue-500 transition-colors font-mono text-sm"
+              className="text-[16px] w-full bg-gray-50 rounded-xl px-3 py-2 border border-gray-200 outline-none focus:border-blue-500 transition-colors font-mono text-sm"
             />
           </div>
 
@@ -204,7 +211,7 @@ export default function CardPaymentPage({ amount, onBack }: CardPaymentPageProps
                 value={formData.expiryDate}
                 onChange={(e) => handleInputChange("expiryDate", e.target.value)}
                 placeholder="MM/YY"
-                className="w-full bg-gray-50 rounded-xl px-3 py-2 border border-gray-200 outline-none focus:border-blue-500 transition-colors text-sm"
+                className="text-[16px] w-full bg-gray-50 rounded-xl px-3 py-2 border border-gray-200 outline-none focus:border-blue-500 transition-colors text-sm"
               />
             </div>
 
@@ -215,7 +222,7 @@ export default function CardPaymentPage({ amount, onBack }: CardPaymentPageProps
                 value={formData.cvv}
                 onChange={(e) => handleInputChange("cvv", e.target.value)}
                 placeholder="123"
-                className="w-full bg-gray-50 rounded-xl px-3 py-2 border border-gray-200 outline-none focus:border-blue-500 transition-colors text-sm"
+                className="text-[16px] w-full bg-gray-50 rounded-xl px-3 py-2 border border-gray-200 outline-none focus:border-blue-500 transition-colors text-sm"
               />
             </div>
           </div>
@@ -227,7 +234,7 @@ export default function CardPaymentPage({ amount, onBack }: CardPaymentPageProps
               value={formData.billingAddress}
               onChange={(e) => handleInputChange("billingAddress", e.target.value)}
               placeholder="123 Main St, City, State, ZIP"
-              className="w-full bg-gray-50 rounded-xl px-3 py-2 border border-gray-200 outline-none focus:border-blue-500 transition-colors text-sm"
+              className="text-[16px] w-full bg-gray-50 rounded-xl px-3 py-2 border border-gray-200 outline-none focus:border-blue-500 transition-colors text-sm"
             />
           </div>
         </div>

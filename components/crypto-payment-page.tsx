@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { ArrowLeft, Copy, Check, QrCode } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import QRCode from "react-qr-code"
-import PaymentCryptoSuccess from "./payment-crypto-success" // ✅ import success component
+import SubmissionSuccessModal from "./submission-success-modal"
 
 interface CryptoPaymentPageProps {
   amount: string
@@ -50,14 +50,13 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
   const [showQR, setShowQR] = useState(false)
   const [loading, setLoading] = useState(false)
   const [timeLeft, setTimeLeft] = useState(30 * 60); // 30 mins in seconds
-  const [submitted, setSubmitted] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false) // ✅ track success state
   const walletAddress = "0xFF103...6e2bc0B660"
   const fullAddress = "0xFF103a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e2bc0B660"
+  const [showSubmissionSuccess, setShowSubmissionSuccess] = useState(false)
+
   let network = getNetwork(crypto);
-
   let cryptoEquivalent = getCryptoEquivalent(crypto, amount);
-
+  
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
@@ -85,7 +84,7 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
 
     setTimeout(() => {
       setLoading(false)
-      setSubmitted(true);
+      setShowSubmissionSuccess(true);
     }, delay)
   }
 
@@ -94,8 +93,9 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
   // }
 
   return (
-<div className="absolute inset-0 bg-[#0D0D0D] flex flex-col p-6 pb-20 overflow-x-auto">
-
+//  <div className="absolute inset-0 bg-[#0D0D0D] flex flex-col p-6 pb-20 overflow-auto">
+ <div className="space-y-30 h-screen bg-black text-white flex flex-col overflow-auto">
+{/* <div className="h-screen bg-black text-white flex flex-col overflow-auto"> */}
     {/* <div className="bg-[#0D0D0D] p-6 flex flex-col h-screen overflow-hidden"> */}
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
@@ -163,31 +163,7 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
         </div>
       </div>
 
-      {/* Instructions */}
-      {/* <div className="bg-[#1C1C1C]/30 rounded-xl p-4 mb-3 flex-1 overflow-y-auto flex flex-col justify-center"> */}
-      {/* <div className="bg-[#1C1C1C]/30 rounded-xl p-4 mb-3  overflow-y-hidden">
-        <h3 className="font-bold text-white mb-2 text-sm">Payment Steps:</h3>
-        <ol className="space-y-2 text-xs text-[#A0A0A0]">
-          <li className="flex gap-2">
-            <span className="font-bold text-white">1.</span>
-            <span>Scan the QR code to initiate your {crypto} payment</span>
-          </li>
-          <li className="flex gap-2">
-            <span className="font-bold text-white">2.</span>
-            <span>Copy the {crypto} address below and send the required amount</span>
-          </li>
-          <li className="flex gap-2">
-            <span className="font-bold text-white">3.</span>
-            <span>Your transaction will be confirmed on the blockchain</span>
-          </li>
-        </ol>
-      </div> */}
-      <div
-        className={`rounded-xl p-4 mb-3 overflow-y-hidden ${
-          submitted ? "border-2 border-green-500 bg-[#1C1C1C]/30" : "bg-[#1C1C1C]/30"
-        }`}
-      >
-        {!submitted ? (
+      <div>
           <>
             <h3 className="font-bold text-white mb-2 text-sm">Payment Steps:</h3>
             <ol className="space-y-2 text-xs text-[#A0A0A0]">
@@ -203,13 +179,8 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
                 <span className="font-bold text-white">3.</span>
                 <span>Your transaction will be confirmed on the blockchain</span>
               </li>
-            </ol>
+              </ol>
           </>
-        ) : (
-          <p className="text-green-500 text-sm text-center">
-            Your payment of {crypto} was submitted successfully. Your balance will be updated as soon as payment is received.
-          </p>
-        )}
       </div>
 
 
@@ -221,13 +192,31 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
       </div>
 
       {/* Submit Button */}
+      <div className="px-10 ">
       <Button
         onClick={handleSubmit}
         disabled={loading}
-        className="w-full bg-[#0052FF] text-white font-semibold py-5 text-base rounded-xl smooth-transition gradient-button"
+        // className="w-full bg-[#0052FF] text-white font-semibold py-5 text-base rounded-xl smooth-transition gradient-button"
+        className="text-md h-full w-full bg-gradient-to-r from-blue-500 to-cyan-400 text-black font-semibold py-4 rounded-full hover:opacity-90 transition" 
       >
           {loading ? "Processing..." : `Submit Payment`}
       </Button>
+      </div>
+      {/* submission success */}
+      {showSubmissionSuccess && (
+      <div className="smooth-transition">
+        <SubmissionSuccessModal
+          onSelect={() => {}}
+          onClose={() => {
+            setShowSubmissionSuccess(false)
+          }}
+          onBackToInvestment={()=> {
+            setShowSubmissionSuccess(false)
+            onBack()  
+          }}
+        />
+      </div>
+    )}
     </div>
   )
 }

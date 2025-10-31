@@ -94,18 +94,18 @@ export default function InvestmentPage({ onNavigate }: InvestmentPageProps) {
   })
   const [showCurrencyModal, setShowCurrencyModal] = useState(false)
 
-  const [selectedCurrency, setSelectedCurrency] = useState("")
+  const [selectedCurrency, setSelectedCurrency] = useState("USD")
   const [selectedETF, setSelectedETF] = useState(() => {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("selectedETF") || "ETF_1"
+      return localStorage.getItem("selectedETF") || "IVV"
     }
-    return "ETF_1"
+    return "IVV"
   })
   const [paymentMethod, setPaymentMethod] = useState(() => {
     if (typeof window !== "undefined") {
-      return localStorage.getItem("paymentMethod") || ""
+      return localStorage.getItem("paymentMethod") || "card"
     }
-    return ""
+    return "card"
   })
 
   const [selectedCrypto, setSelectedCrypto] = useState(() => {
@@ -344,7 +344,7 @@ export default function InvestmentPage({ onNavigate }: InvestmentPageProps) {
               {/* 2 */}
             <div>
 
-              <div className="font-semibold">Pay with</div>
+              <div className=" font-semibold">Pay with</div>
               <div className="pr-10">
                 <span className="text-[11px] text-gray-500">
                   {paymentMethod === "card"

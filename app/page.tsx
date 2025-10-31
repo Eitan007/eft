@@ -9,7 +9,7 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState<"investment" | "crypto" | "card">("investment")
   const [investmentData, setInvestmentData] = useState({
     amount: "",
-    selectedETF: "ETF_1",
+    selectedETF: "",
     paymentMethod: "",
     selectedCrypto: "",
   })

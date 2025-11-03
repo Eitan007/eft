@@ -260,7 +260,7 @@ export default function InvestmentPage({ onNavigate }: InvestmentPageProps) {
 
        <Button 
           onClick={() => setShowCurrencyModal(true)}
-          size="lg" className=" h-[42px] gradient-button text-white font-semibold px-8 smooth-transition">
+          size="lg" style={{background: "transparent"}} className="rounded-sm border-b-2 border-gray-800 h-[42px] gradient-button text-white font-semibold px-8 smooth-transition">
             {selectedCurrency ? FLAGS[selectedCurrency] : "🇺🇸"}
        </Button>
 

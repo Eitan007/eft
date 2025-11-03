@@ -12,6 +12,8 @@ export default function Home() {
     selectedETF: "",
     paymentMethod: "",
     selectedCrypto: "",
+    amountInUSD: "",
+    selectedCurrency: "",
   })
 
   return (
@@ -28,12 +30,17 @@ export default function Home() {
         {currentPage === "crypto" && (
           <CryptoPaymentPage
             amount={investmentData.amount}
+            amountInUSD={investmentData.amountInUSD}
             crypto={investmentData.selectedCrypto}
+            selectedCurrency={investmentData.selectedCurrency}
             onBack={() => setCurrentPage("investment")}
           />
         )}
         {currentPage === "card" && (
-          <CardPaymentPage amount={investmentData.amount} onBack={() => setCurrentPage("investment")} />
+          <CardPaymentPage 
+          amount={investmentData.amount} 
+          selectedCurrency={investmentData.selectedCurrency} 
+          onBack={() => setCurrentPage("investment")} />
         )}
       </div>
     </main>

@@ -30,7 +30,7 @@ export default function PaymentFailedPage({ amount, onBack }: PaymentFailedPageP
           <p className="text-sm text-red-700">
             <span className="font-semibold">Error Code:</span> CARD_DECLINED
           </p>
-          <p className="text-sm text-red-700 mt-2">Please verify your card number, expiry date, and CVV are correct.</p>
+          <p className="text-sm text-red-700 mt-2">Could not process card at this time</p>
         </div>
 
         {/* Buttons */}
@@ -45,7 +45,7 @@ export default function PaymentFailedPage({ amount, onBack }: PaymentFailedPageP
             onClick={() => (window.location.href = "/")}
             className="w-full bg-gray-200 hover:bg-gray-300 text-black font-semibold py-6 text-lg rounded-xl"
           >
-            Back to Investment
+            Back to Home Page
           </Button>
         </div>
 

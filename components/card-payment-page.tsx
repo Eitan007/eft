@@ -7,6 +7,7 @@ import PaymentFailedPage from "./payment-failed-page"
 
 interface CardPaymentPageProps {
   amount: string
+  selectedCurrency: string
   onBack: () => void
 }
 
@@ -55,19 +56,7 @@ export default function CardPaymentPage({ amount, onBack }: CardPaymentPageProps
         setFormData((prev) => ({ ...prev, [field]: formatExpiryDate(cleaned) }))
       }
     }
-    // } else if (field === "expiryDate") {
-    //   const cleaned = value.replace(/\D/g, "").slice(0, 4); // max 4 digits
-    //   if (cleaned.length <= 4) {
-    //     let month = cleaned.slice(0, 2);
-    //     if (month) {
-    //       let monthNum = Math.max(1, Math.min(12, parseInt(month)));
-    //       month = monthNum.toString().padStart(2, "0");
-    //     }
-    //     const formatted = month + (cleaned.length > 2 ? "/" + cleaned.slice(2, 4) : "");
-    //     setFormData((prev) => ({ ...prev, [field]: formatted }));
-    //   }
-    // }
-  
+
     else if (field === "cvv") {
       if (value.length <= 3 && /^\d*$/.test(value)) {
         setFormData((prev) => ({ ...prev, [field]: value }))

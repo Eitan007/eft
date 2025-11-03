@@ -9,6 +9,8 @@ import SubmissionSuccessModal from "./submission-success-modal"
 interface CryptoPaymentPageProps {
   amount: string
   crypto: string
+  selectedCurrency: string
+  amountInUSD: string
   onBack: () => void
 }
 
@@ -18,6 +20,7 @@ const rates: Record<string, number> = {
   eth: 0.00028,      // ≈ $3,600/ETH
   usdc: 1,           // stablecoin
 };
+
 
 // Determine accurate network based on crypto type
 const getNetwork = (crypto: string) => {
@@ -37,15 +40,29 @@ const getNetwork = (crypto: string) => {
 };
 
 // Calculate crypto equivalent
-const getCryptoEquivalent = (crypto: string, amount: string) => {
-  const rate = rates[crypto.toLowerCase()] || 0;
-  return (parseFloat(amount) * rate).toFixed(6);
+const getCryptoEquivalent = (crypto: string, amountInUSD: string) => {
+  const rate = rates[crypto.toLowerCase()] || 1;
+  let x = (parseFloat(amountInUSD) * rate).toFixed(6);
+  return (parseFloat(amountInUSD) * rate).toFixed(6);
 };
 
+// useEffect(() => {
+//   const fetchBalance = async () => {
+//     try {
+//       const response = await fetch("/api/user-balance")
+//       const data = await response.json()
+//       setBalance(data.balance || "0.00")
+//     } catch (error) {
+//       console.error("Failed to fetch balance:", error)
+//       setBalance("0.00")
+//     }
+//   }
+//   fetchBalance()
+// }, [])
 
 
-
-export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaymentPageProps) {
+export default function CryptoPaymentPage({ selectedCurrency, amountInUSD, amount, crypto, onBack }: CryptoPaymentPageProps) {
+  // const [selectedCurrency, setBalance] = useState("0.00")
   const [copied, setCopied] = useState(false)
   const [showQR, setShowQR] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -53,10 +70,10 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
   const walletAddress = "0xFF103...6e2bc0B660"
   const fullAddress = "0xFF103a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e2bc0B660"
   const [showSubmissionSuccess, setShowSubmissionSuccess] = useState(false)
-
-  let network = getNetwork(crypto);
-  let cryptoEquivalent = getCryptoEquivalent(crypto, amount);
   
+  let network = getNetwork(crypto);
+  let cryptoEquivalent = getCryptoEquivalent(crypto, amountInUSD);
+
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
@@ -64,7 +81,7 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
     return () => clearInterval(timer);
   }, []);
 
-  const formatTime = (seconds) => {
+  const formatTime = (seconds: number) => {
     const m = String(Math.floor(seconds / 60)).padStart(2, "0");
     const s = String(seconds % 60).padStart(2, "0");
     return `${m}:${s}`;
@@ -88,16 +105,8 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
     }, delay)
   }
 
-  // if (showSuccess) {
-  //   return <PaymentCryptoSuccess amount={amount} onBack={onBack} /> // ✅ show success page
-  // }
-
   return (
-//  <div className="absolute inset-0 bg-[#0D0D0D] flex flex-col p-6 pb-20 overflow-auto">
  <div className="space-y-30 h-screen bg-black text-white flex flex-col overflow-auto">
-{/* <div className="h-screen bg-black text-white flex flex-col overflow-auto"> */}
-    {/* <div className="bg-[#0D0D0D] p-6 flex flex-col h-screen overflow-hidden"> */}
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <button onClick={onBack} className="p-2 hover:bg-[#0E2047] rounded-lg smooth-transition">
           <ArrowLeft className="w-6 h-6 text-white" />
@@ -127,11 +136,8 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
 
       {/* Wallet Address */}
       <div className="mb-4">
-        <label className="text-sm text-[#A0A0A0] mb-1 block">Your {crypto} address</label>
-
+        <label className="text-sm text-[#A0A0A0] mb-1 block">{crypto} address</label>
         <div className="rounded-xl p-3 border border-[#1C1C1C] flex items-center justify-between bg-transparent hover:bg-[#1C1C1C] smooth-transition">
-
-        {/* <div className="bg-[#0E2047] rounded-xl p-3 border border-[#1C1C1C] flex items-center justify-between"> */}
           <span className="font-mono text-white text-xs">{walletAddress}</span>
           <button
             onClick={handleCopy}
@@ -159,7 +165,7 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
         </div>
         <div className="flex justify-between">
           <span className="text-[#A0A0A0]"> </span>
-          <span className="font-bold text-[#A0A0A0]">$ {amount}</span>
+          <span className="font-bold text-[#A0A0A0]">{selectedCurrency} {amount}</span>
         </div>
       </div>
 
@@ -183,7 +189,6 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
           </>
       </div>
 
-
       {/* Note */}
       <div className="bg-[#0E2047] rounded-xl p-3 border border-transparent mb-3 bg-transparent">
         <p className="text-xs text-[#A0A0A0] text-center">
@@ -196,12 +201,12 @@ export default function CryptoPaymentPage({ amount, crypto, onBack }: CryptoPaym
       <Button
         onClick={handleSubmit}
         disabled={loading}
-        // className="w-full bg-[#0052FF] text-white font-semibold py-5 text-base rounded-xl smooth-transition gradient-button"
         className="text-md h-full w-full bg-gradient-to-r from-blue-500 to-cyan-400 text-black font-semibold py-4 rounded-full hover:opacity-90 transition" 
       >
           {loading ? "Processing..." : `Submit Payment`}
       </Button>
       </div>
+
       {/* submission success */}
       {showSubmissionSuccess && (
       <div className="smooth-transition">

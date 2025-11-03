@@ -36,19 +36,20 @@ interface SubmissionSuccessModalProps {
         className="max-w-md mx-auto w-full bg-[#0D0D0D] p-6 rounded-t-3xl animate-in slide-in-from-bottom-10 duration-250 max-h-96 overflow-y-auto"
       >
         <div className="flex flex-col items-center justify-center mb-6 space-y-3">
-          <CheckCircle className="w-16 h-16 text-green-500" />
-          <h2 className="text-2xl font-bold text-white">Submission Successful</h2>
+          {/* <CheckCircle className="w-16 h-16 text-green-500" /> */}
+          <div className="w-16 h-16 border-4 border-t-transparent border-green-500 rounded-full animate-spin"></div>
+          <h2 className="text-2xl font-bold text-white">Payment Processing</h2>
         </div>
 
         <div className="flex flex-col items-center justify-center space-y-4">
           <p className="text-gray-400 text-sm text-center">
-          Payment submission received — your account will update after confirmation.
+          Please wait
           </p>
           <button
             onClick={onBackToInvestment}
             className="w-full bg-gradient-to-r from-blue-500 to-cyan-400 text-black font-semibold py-4 rounded-full hover:opacity-90 transition"
           >
-            Back to Investment Page
+            Back to Home Page
           </button>
         </div>
       </div>
